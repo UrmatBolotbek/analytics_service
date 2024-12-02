@@ -40,17 +40,15 @@ public class AnalyticsEventService {
         }
         if (interval != null) {
             LocalDateTime dateTime = getLocalDateTime(interval);
+            Stream<AnalyticsEvent> analyticsEventStream = analyticsEventList
+                    .filter(analyticsEvent -> analyticsEvent.getReceivedAt().isAfter(dateTime));
             log.info("Getting analytics events from {}", dateTime);
-            return analyticsEventList.filter(analyticsEvent -> analyticsEvent.getReceivedAt().isAfter(dateTime))
-                    .sorted(Comparator.comparing(AnalyticsEvent::getReceivedAt))
-                    .map(mapper::toDto)
-                    .toList();
+            return getSortedDtoList(analyticsEventStream);
         }
+        Stream<AnalyticsEvent> analyticsEventStream = analyticsEventList
+                .filter(analyticsEvent -> isInPeriod(analyticsEvent, from, to));
         log.info("Getting analytics events from {} to {}", from, to);
-        return analyticsEventList.filter(analyticsEvent -> isInPeriod(analyticsEvent, from, to))
-                .sorted(Comparator.comparing(AnalyticsEvent::getReceivedAt))
-                .map(mapper::toDto)
-                .toList();
+        return getSortedDtoList(analyticsEventStream);
     }
 
     private boolean isInPeriod(AnalyticsEvent analyticsEvent, LocalDateTime from, LocalDateTime to) {
@@ -69,6 +67,12 @@ public class AnalyticsEventService {
             case YEAR -> now.minusYears(number);
         };
         return newDate;
+    }
+
+    private List<AnalyticsEventResponseDto> getSortedDtoList(Stream<AnalyticsEvent> analyticsEvent) {
+        return  analyticsEvent.sorted(Comparator.comparing(AnalyticsEvent::getReceivedAt))
+                .map(mapper::toDto)
+                .toList();
     }
 
 }
