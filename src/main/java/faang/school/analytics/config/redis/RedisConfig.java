@@ -24,6 +24,8 @@ public class RedisConfig {
     private String redisHost;
     @Value("${spring.data.redis.port}")
     private int redisPort;
+    @Value("${topic.goal-completed}")
+    private String topicGoalCompleted;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -45,7 +47,7 @@ public class RedisConfig {
         container.setConnectionFactory(connectionFactory);
 
         MessageListenerAdapter goalCompletedListener = new MessageListenerAdapter(goalCompletedEventListener);
-        container.addMessageListener(goalCompletedListener, new ChannelTopic("goal_completed_topic"));
+        container.addMessageListener(goalCompletedListener, new ChannelTopic(topicGoalCompleted));
 
         return container;
     }

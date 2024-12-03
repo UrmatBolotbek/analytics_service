@@ -7,6 +7,7 @@ import faang.school.analytics.model.AnalyticsEvent;
 import faang.school.analytics.model.EventType;
 import faang.school.analytics.service.analytics_event.AnalyticsEventService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class GoalCompletedEventListener implements MessageListener {
 
     private final ObjectMapper objectMapper;
@@ -28,6 +30,7 @@ public class GoalCompletedEventListener implements MessageListener {
           AnalyticsEvent analyticsEvent = mapper.toAnalyticsEvent(goalCompletedEvent);
           analyticsEvent.setEventType(EventType.GOAL_COMPLETED);
           analyticsEventService.save(analyticsEvent);
+          log.info("Goal completed: {}", analyticsEvent.getReceiverId());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
