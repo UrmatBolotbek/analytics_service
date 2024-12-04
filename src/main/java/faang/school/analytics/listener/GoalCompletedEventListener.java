@@ -30,7 +30,7 @@ public class GoalCompletedEventListener extends AbstractEventListener<GoalComple
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, GoalCompletedEvent.class, event -> {
             AnalyticsEvent analyticsEvent = mapper.toAnalyticsEvent(event);
-            analyticsEvent.setEventType(EventType.fromEventClass(analyticsEvent.getClass()));
+            analyticsEvent.setEventType(EventType.fromEventClass(event.getClass()));
             analyticsEventService.save(analyticsEvent);
             log.info("Goal completed: {}", analyticsEvent.getReceiverId());
         });

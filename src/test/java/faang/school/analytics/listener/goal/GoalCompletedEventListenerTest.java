@@ -24,9 +24,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class GoalCompletedEventListenerTest {
@@ -76,9 +74,9 @@ public class GoalCompletedEventListenerTest {
     void testOnMessageSuccess() throws IOException {
         byte[] pattern = new byte[]{1,2,3,4};
 
-        when(mapper.toAnalyticsEvent(any(GoalCompletedEvent.class))).thenReturn(analyticsEvent);
+        when(mapper.toAnalyticsEvent(goalEvent)).thenReturn(analyticsEvent);
+        when(objectMapper.readValue(message.getBody(), GoalCompletedEvent.class)).thenReturn(goalEvent);
 
-//        when(objectMapper.readValue(message.getBody(), GoalCompletedEvent.class)).thenReturn(goalEvent);
         listener.onMessage(message, pattern);
         verify(analyticsEventService).save(analyticsEventCaptor.capture());
         AnalyticsEvent analyticsEvent = analyticsEventCaptor.getValue();
