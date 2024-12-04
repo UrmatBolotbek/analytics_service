@@ -1,10 +1,11 @@
 package faang.school.analytics.config.redis;
 
-import faang.school.analytics.message.goal.GoalCompletedEventListener;
+import faang.school.analytics.listener.GoalCompletedEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
@@ -24,7 +25,7 @@ public class RedisConfig {
     private String redisHost;
     @Value("${spring.data.redis.port}")
     private int redisPort;
-    @Value("${topic.goal-completed}")
+    @Value("${spring.data.redis.channel.goal-completed}")
     private String topicGoalCompleted;
 
     @Bean
@@ -38,6 +39,7 @@ public class RedisConfig {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory());
         template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new StringRedisSerializer());
         return template;
     }
 
@@ -46,10 +48,13 @@ public class RedisConfig {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
 
-        MessageListenerAdapter goalCompletedListener = new MessageListenerAdapter(goalCompletedEventListener);
+        MessageListenerAdapter goalCompletedListener = getListenerAdapter(goalCompletedEventListener);
         container.addMessageListener(goalCompletedListener, new ChannelTopic(topicGoalCompleted));
-
         return container;
+    }
+
+    private MessageListenerAdapter getListenerAdapter(MessageListener listenerAdapter) {
+        return new MessageListenerAdapter(listenerAdapter);
     }
 
 }

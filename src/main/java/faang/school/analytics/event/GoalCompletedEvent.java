@@ -1,4 +1,4 @@
-package faang.school.analytics.dto.goal_completed_event;
+package faang.school.analytics.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

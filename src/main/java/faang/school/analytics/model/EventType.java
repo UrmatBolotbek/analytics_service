@@ -1,5 +1,10 @@
 package faang.school.analytics.model;
 
+import faang.school.analytics.event.GoalCompletedEvent;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public enum EventType {
     PROFILE_VIEW,
     PROJECT_VIEW,
@@ -17,6 +22,20 @@ public enum EventType {
     ACHIEVEMENT_RECEIVED,
     PROFILE_APPEARED_IN_SEARCH,
     PROJECT_APPEARED_IN_SEARCH;
+
+    private static final Map<Class<?>, EventType> classToEventTypeMap = new HashMap<>();
+
+    static {
+        classToEventTypeMap.put(GoalCompletedEvent.class, GOAL_COMPLETED);
+    }
+
+    public static EventType fromEventClass(Class<?> clazz) {
+        EventType eventType = classToEventTypeMap.get(clazz);
+        if (eventType == null) {
+            throw new IllegalArgumentException("Unknown event class: " + clazz);
+        }
+        return eventType;
+    }
 
     public static EventType of(int type) {
         for (EventType eventType : EventType.values()) {

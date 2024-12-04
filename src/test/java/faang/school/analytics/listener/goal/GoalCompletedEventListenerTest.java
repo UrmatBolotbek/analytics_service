@@ -1,7 +1,8 @@
-package faang.school.analytics.message.goal;
+package faang.school.analytics.listener.goal;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.analytics.dto.goal_completed_event.GoalCompletedEvent;
+import faang.school.analytics.event.GoalCompletedEvent;
+import faang.school.analytics.listener.GoalCompletedEventListener;
 import faang.school.analytics.mapper.analytics_event.AnalyticsEventMapperImpl;
 import faang.school.analytics.model.AnalyticsEvent;
 import faang.school.analytics.model.EventType;
@@ -20,8 +21,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.connection.Message;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -42,6 +45,7 @@ public class GoalCompletedEventListenerTest {
 
     private Message message;
     private GoalCompletedEvent goalEvent;
+    private AnalyticsEvent analyticsEvent;
 
     @BeforeEach
     public void setup() {
@@ -59,6 +63,12 @@ public class GoalCompletedEventListenerTest {
         goalEvent = GoalCompletedEvent.builder()
                 .goalId(10L)
                 .userId(99L)
+                .completedAt(LocalDateTime.of(2024,12,12,12,12))
+                .build();
+        analyticsEvent = AnalyticsEvent.builder()
+                .actorId(99L)
+                .receiverId(10L)
+                .receivedAt(LocalDateTime.of(2024,12,12,12,12))
                 .build();
     }
 
@@ -66,7 +76,9 @@ public class GoalCompletedEventListenerTest {
     void testOnMessageSuccess() throws IOException {
         byte[] pattern = new byte[]{1,2,3,4};
 
-        when(objectMapper.readValue(message.getBody(), GoalCompletedEvent.class)).thenReturn(goalEvent);
+        when(mapper.toAnalyticsEvent(any(GoalCompletedEvent.class))).thenReturn(analyticsEvent);
+
+//        when(objectMapper.readValue(message.getBody(), GoalCompletedEvent.class)).thenReturn(goalEvent);
         listener.onMessage(message, pattern);
         verify(analyticsEventService).save(analyticsEventCaptor.capture());
         AnalyticsEvent analyticsEvent = analyticsEventCaptor.getValue();

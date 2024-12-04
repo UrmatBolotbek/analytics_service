@@ -23,6 +23,7 @@ spring:
       host: localhost
       channel:
         profile-view: profile_view_channel
+        goal-completed: goal_completed_topic
 
 server:
   port: 8086
@@ -34,6 +35,3 @@ logging:
 project-service:
   host: localhost
   port: 8082
-
-topic:
-  goal-completed: "goal_completed_topic"
