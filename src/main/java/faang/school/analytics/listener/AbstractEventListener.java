@@ -17,7 +17,7 @@ public abstract class AbstractEventListener<T> {
     protected final AnalyticsEventMapper analyticsEventMapper;
     private final ObjectMapper objectMapper;
 
-    protected void handleEvent(Message message, Class<T> type, Consumer<T> consumer) {
+    protected void handleEvent(Message message, Class<T> clazz, Consumer<T> consumer) {
          try {
             T event = objectMapper.readValue(message.getBody(), clazz);
             consumer.accept(event);

@@ -21,9 +21,10 @@ public class FundRaisedEventListener extends AbstractEventListener<FundRaisedEve
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        FundRaisedEvent event = handleEvent(message, FundRaisedEvent.class);
-        AnalyticsEvent entity = analyticsEventMapper.toEntity(event);
-        entity.setEventType(EventType.fromEventClass(event.getClass()));
-        analyticsEventService.save(entity);
+        handleEvent(message, FundRaisedEvent.class, fundRaisedEvent -> {
+            AnalyticsEvent entity = analyticsEventMapper.toEntity(fundRaisedEvent);
+            entity.setEventType(EventType.fromEventClass(fundRaisedEvent.getClass()));
+            analyticsEventService.save(entity);
+        });
     }
 }
