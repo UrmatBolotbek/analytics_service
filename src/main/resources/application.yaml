@@ -24,6 +24,7 @@ spring:
       channel:
         profile-view: profile_view_topic
         fund-raised: fund-raised-topic
+        goal-completed: goal_completed_topic
 
 server:
   port: 8086

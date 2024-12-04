@@ -1,6 +1,7 @@
 package faang.school.analytics.model;
 
 import faang.school.analytics.event.FundRaisedEvent;
+import faang.school.analytics.event.GoalCompletedEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +29,7 @@ public enum EventType {
 
     static {
         classToEventTypeMap.put(FundRaisedEvent.class, FUND_RAISED);
+        classToEventTypeMap.put(GoalCompletedEvent.class, GOAL_COMPLETED);
     }
 
     public static EventType fromEventClass(Class<?> clazz) {
