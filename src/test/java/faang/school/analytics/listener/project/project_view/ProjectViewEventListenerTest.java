@@ -1,13 +1,13 @@
-package faang.school.analytics.listener.goal;
+package faang.school.analytics.listener.project.project_view;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.analytics.event.GoalCompletedEvent;
+import faang.school.analytics.event.ProjectViewEvent;
+import faang.school.analytics.listener.project.ProjectViewEventListener;
 import faang.school.analytics.mapper.analytics_event.AnalyticsEventMapperImpl;
 import faang.school.analytics.model.AnalyticsEvent;
 import faang.school.analytics.model.EventType;
 import faang.school.analytics.service.analytics_event.AnalyticsEventService;
-import org.jetbrains.annotations.NotNull;
-
+import jakarta.validation.constraints.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,16 +23,17 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class GoalCompletedEventListenerTest {
+public class ProjectViewEventListenerTest {
 
     @Captor
     private ArgumentCaptor<AnalyticsEvent> analyticsEventCaptor;
 
     @InjectMocks
-    private GoalCompletedEventListener listener;
+    private ProjectViewEventListener listener;
     @Mock
     private ObjectMapper objectMapper;
     @Mock
@@ -41,7 +42,7 @@ public class GoalCompletedEventListenerTest {
     private AnalyticsEventMapperImpl mapper;
 
     private Message message;
-    private GoalCompletedEvent goalEvent;
+    private ProjectViewEvent viewEvent;
     private AnalyticsEvent analyticsEvent;
 
     @BeforeEach
@@ -57,10 +58,10 @@ public class GoalCompletedEventListenerTest {
                 return new byte[0];
             }
         };
-        goalEvent = GoalCompletedEvent.builder()
-                .goalId(10L)
+        viewEvent = ProjectViewEvent.builder()
+                .projectId(10L)
                 .userId(99L)
-                .completedAt(LocalDateTime.of(2024,12,12,12,12))
+                .eventTime(LocalDateTime.of(2024,12,12,12,12))
                 .build();
         analyticsEvent = AnalyticsEvent.builder()
                 .actorId(99L)
@@ -73,13 +74,13 @@ public class GoalCompletedEventListenerTest {
     void testOnMessageSuccess() throws IOException {
         byte[] pattern = new byte[]{1,2,3,4};
 
-        when(mapper.toAnalyticsEvent(goalEvent)).thenReturn(analyticsEvent);
-        when(objectMapper.readValue(message.getBody(), GoalCompletedEvent.class)).thenReturn(goalEvent);
+        when(mapper.toAnalyticsEvent(viewEvent)).thenReturn(analyticsEvent);
+        when(objectMapper.readValue(message.getBody(), ProjectViewEvent.class)).thenReturn(viewEvent);
 
         listener.onMessage(message, pattern);
         verify(analyticsEventService).save(analyticsEventCaptor.capture());
         AnalyticsEvent analyticsEvent = analyticsEventCaptor.getValue();
-        assertEquals(EventType.GOAL_COMPLETED, analyticsEvent.getEventType());
+        assertEquals(EventType.PROJECT_VIEW, analyticsEvent.getEventType());
     }
 
 }

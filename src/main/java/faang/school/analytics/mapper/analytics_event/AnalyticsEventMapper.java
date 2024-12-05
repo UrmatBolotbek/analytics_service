@@ -1,5 +1,6 @@
 package faang.school.analytics.mapper.analytics_event;
 
+import faang.school.analytics.event.ProjectViewEvent;
 import faang.school.analytics.event.AnalyticsEventResponseDto;
 import faang.school.analytics.event.GoalCompletedEvent;
 import faang.school.analytics.model.AnalyticsEvent;
@@ -11,6 +12,11 @@ import org.mapstruct.ReportingPolicy;
 public interface AnalyticsEventMapper {
 
     AnalyticsEventResponseDto toDto(AnalyticsEvent analyticsEvent);
+
+    @Mapping(source = "projectId", target = "receiverId")
+    @Mapping(source = "userId", target = "actorId")
+    @Mapping(source = "eventTime", target = "receivedAt")
+    AnalyticsEvent toAnalyticsEvent(ProjectViewEvent projectViewEvent);
 
     @Mapping(source = "goalId", target = "receiverId")
     @Mapping(source = "userId", target = "actorId")
