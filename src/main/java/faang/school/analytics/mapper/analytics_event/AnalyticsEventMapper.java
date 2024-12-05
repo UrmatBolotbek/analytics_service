@@ -1,6 +1,5 @@
 package faang.school.analytics.mapper.analytics_event;
 
-import faang.school.analytics.dto.analytics_event.AnalyticsEventResponseDto;
 import faang.school.analytics.event.FundRaisedEvent;
 import faang.school.analytics.event.AnalyticsEventResponseDto;
 import faang.school.analytics.event.GoalCompletedEvent;
