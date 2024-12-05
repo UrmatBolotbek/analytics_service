@@ -1,6 +1,6 @@
 package faang.school.analytics.config.redis;
 
-import faang.school.analytics.listener.GoalCompletedEventListener;
+import faang.school.analytics.listener.goal.GoalCompletedEventListener;
 import faang.school.analytics.listener.project.ProjectViewEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
