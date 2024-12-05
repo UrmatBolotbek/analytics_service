@@ -1,5 +1,6 @@
 package faang.school.analytics.config.redis;
 
+import faang.school.analytics.listener.GoalCompletedEventListener;
 import faang.school.analytics.listener.project.ProjectViewEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +20,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
 
+    private final GoalCompletedEventListener goalCompletedEventListener;
     private final ProjectViewEventListener projectViewEventListener;
 
     @Value("${spring.data.redis.host}")
@@ -27,6 +29,8 @@ public class RedisConfig {
     private int redisPort;
     @Value("${spring.data.redis.channel.project-view-channel}")
     private String topicProjectView;
+    @Value("${spring.data.redis.channel.goal-completed}")
+    private String topicGoalCompleted;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -50,6 +54,8 @@ public class RedisConfig {
 
         MessageListenerAdapter projectViewListener = getListenerAdapter(projectViewEventListener);
         container.addMessageListener(projectViewListener, new ChannelTopic(topicProjectView));
+        MessageListenerAdapter goalCompletedListener = getListenerAdapter(goalCompletedEventListener);
+        container.addMessageListener(goalCompletedListener, new ChannelTopic(topicGoalCompleted));
         return container;
     }
 

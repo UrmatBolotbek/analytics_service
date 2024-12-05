@@ -5,6 +5,11 @@ import faang.school.analytics.event.ProjectViewEvent;
 import java.util.HashMap;
 import java.util.Map;
 
+import faang.school.analytics.event.GoalCompletedEvent;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public enum EventType {
     PROFILE_VIEW,
     PROJECT_VIEW,
@@ -27,6 +32,10 @@ public enum EventType {
 
     static {
         classToEventTypeMap.put(ProjectViewEvent.class, PROJECT_VIEW);
+    }
+
+    static {
+        classToEventTypeMap.put(GoalCompletedEvent.class, GOAL_COMPLETED);
     }
 
     public static EventType fromEventClass(Class<?> clazz) {
