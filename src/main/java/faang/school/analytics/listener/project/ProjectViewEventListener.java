@@ -16,21 +16,16 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class ProjectViewEventListener extends AbstractEventListener<ProjectViewEvent> implements MessageListener {
 
-    private final AnalyticsEventService analyticsEventService;
-    private final AnalyticsEventMapper mapper;
-
     public ProjectViewEventListener(ObjectMapper objectMapper,
-                                      AnalyticsEventService analyticsEventService,
-                                      AnalyticsEventMapper mapper) {
-        super(objectMapper);
-        this.analyticsEventService = analyticsEventService;
-        this.mapper = mapper;
+                                    AnalyticsEventService analyticsEventService,
+                                    AnalyticsEventMapper analyticsEventMapper) {
+        super(objectMapper, analyticsEventService, analyticsEventMapper);
     }
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, ProjectViewEvent.class, event -> {
-            AnalyticsEvent analyticsEvent = mapper.toAnalyticsEvent(event);
+            AnalyticsEvent analyticsEvent = analyticsEventMapper.toAnalyticsEvent(event);
             analyticsEvent.setEventType(EventType.fromEventClass(event.getClass()));
             analyticsEventService.save(analyticsEvent);
             log.info("The project {} was viewed by the user {}", analyticsEvent.getId(), event.getUserId());
