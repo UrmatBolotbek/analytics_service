@@ -1,7 +1,8 @@
-package faang.school.analytics.listener;
+package faang.school.analytics.listener.goal;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.analytics.event.GoalCompletedEvent;
+import faang.school.analytics.listener.AbstractEventListener;
 import faang.school.analytics.mapper.analytics_event.AnalyticsEventMapper;
 import faang.school.analytics.model.AnalyticsEvent;
 import faang.school.analytics.model.EventType;
@@ -15,9 +16,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class GoalCompletedEventListener extends AbstractEventListener<GoalCompletedEvent> implements MessageListener {
 
-    public GoalCompletedEventListener(AnalyticsEventService analyticsEventService,
-                                      AnalyticsEventMapper analyticsEventMapper,
-                                      ObjectMapper objectMapper) {
+
+    public GoalCompletedEventListener(ObjectMapper objectMapper,
+                                      AnalyticsEventService analyticsEventService,
+                                      AnalyticsEventMapper analyticsEventMapper) {
         super(analyticsEventService, analyticsEventMapper, objectMapper);
     }
 

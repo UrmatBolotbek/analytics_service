@@ -22,8 +22,9 @@ spring:
       port: 6379
       host: localhost
       channel:
-        profile-view: profile_view_topic
         fund-raised: fund-raised-topic
+        project-view-channel: project_view
+        profile-view: profile_view_channel
         goal-completed: goal_completed_topic
 
 server:
