@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import faang.school.analytics.event.GoalCompletedEvent;
+import faang.school.analytics.event.SearchAppearanceEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +37,10 @@ public enum EventType {
 
     static {
         classToEventTypeMap.put(GoalCompletedEvent.class, GOAL_COMPLETED);
+    }
+
+    static {
+        classToEventTypeMap.put(SearchAppearanceEvent.class, PROFILE_APPEARED_IN_SEARCH);
     }
 
     public static EventType fromEventClass(Class<?> clazz) {
