@@ -1,7 +1,6 @@
 package faang.school.analytics.listener.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import faang.school.analytics.event.ProjectViewEvent;
 import faang.school.analytics.event.SearchAppearanceEvent;
 import faang.school.analytics.mapper.analytics_event.AnalyticsEventMapperImpl;
 import faang.school.analytics.model.AnalyticsEvent;
