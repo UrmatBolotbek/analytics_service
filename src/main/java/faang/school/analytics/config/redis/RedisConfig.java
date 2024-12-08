@@ -32,10 +32,8 @@ public class RedisConfig {
     private int redisPort;
     @Value("${spring.data.redis.channels.project-view-channel}")
     private String topicProjectView;
-
     @Value("${spring.data.redis.channels.fund-raised}")
     private String fundRaisedTopic;
-
     @Value("${spring.data.redis.channels.goal-completed}")
     private String topicGoalCompleted;
     @Value("${spring.data.redis.channels.search-appearance-channel}")
@@ -63,6 +61,7 @@ public class RedisConfig {
 
         addMessageListenerInContainer(projectViewEventListener, topicProjectView, container);
         addMessageListenerInContainer(goalCompletedEventListener, topicGoalCompleted, container);
+        addMessageListenerInContainer(searchAppearanceEventListener, topicSearchAppearance, container);
         addMessageListenerInContainer(fundRaisedEventListener, fundRaisedTopic, container);
 
         return container;

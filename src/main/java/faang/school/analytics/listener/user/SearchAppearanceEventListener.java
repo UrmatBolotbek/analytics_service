@@ -19,7 +19,7 @@ public class SearchAppearanceEventListener extends AbstractEventListener<SearchA
     public SearchAppearanceEventListener(ObjectMapper objectMapper,
                                          AnalyticsEventService analyticsEventService,
                                          AnalyticsEventMapper analyticsEventMapper) {
-        super(objectMapper, analyticsEventService, analyticsEventMapper);
+        super(analyticsEventService, analyticsEventMapper, objectMapper);
     }
 
     @Override

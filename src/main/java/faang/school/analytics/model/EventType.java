@@ -34,10 +34,6 @@ public enum EventType {
         classToEventTypeMap.put(FundRaisedEvent.class, FUND_RAISED);
         classToEventTypeMap.put(GoalCompletedEvent.class, GOAL_COMPLETED);
         classToEventTypeMap.put(ProjectViewEvent.class, PROJECT_VIEW);
-
-    }
-
-    static {
         classToEventTypeMap.put(SearchAppearanceEvent.class, PROFILE_APPEARED_IN_SEARCH);
     }
 
