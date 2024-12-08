@@ -1,14 +1,12 @@
 package faang.school.analytics.model;
 
+import faang.school.analytics.event.FundRaisedEvent;
 import faang.school.analytics.event.ProjectViewEvent;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import faang.school.analytics.event.GoalCompletedEvent;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public enum EventType {
     PROFILE_VIEW,
@@ -26,16 +24,16 @@ public enum EventType {
     GOAL_COMPLETED,
     ACHIEVEMENT_RECEIVED,
     PROFILE_APPEARED_IN_SEARCH,
-    PROJECT_APPEARED_IN_SEARCH;
+    PROJECT_APPEARED_IN_SEARCH,
+    FUND_RAISED;
 
     private static final Map<Class<?>, EventType> classToEventTypeMap = new HashMap<>();
 
     static {
-        classToEventTypeMap.put(ProjectViewEvent.class, PROJECT_VIEW);
-    }
-
-    static {
+        classToEventTypeMap.put(FundRaisedEvent.class, FUND_RAISED);
         classToEventTypeMap.put(GoalCompletedEvent.class, GOAL_COMPLETED);
+        classToEventTypeMap.put(ProjectViewEvent.class, PROJECT_VIEW);
+
     }
 
     public static EventType fromEventClass(Class<?> clazz) {

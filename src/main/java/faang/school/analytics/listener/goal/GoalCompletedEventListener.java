@@ -20,7 +20,7 @@ public class GoalCompletedEventListener extends AbstractEventListener<GoalComple
     public GoalCompletedEventListener(ObjectMapper objectMapper,
                                       AnalyticsEventService analyticsEventService,
                                       AnalyticsEventMapper analyticsEventMapper) {
-        super(objectMapper, analyticsEventService, analyticsEventMapper);
+        super(analyticsEventService, analyticsEventMapper, objectMapper);
     }
 
     @Override
