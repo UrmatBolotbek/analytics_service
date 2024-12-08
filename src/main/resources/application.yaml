@@ -21,7 +21,8 @@ spring:
     redis:
       port: 6379
       host: localhost
-      channel:
+      channels:
+        fund-raised: fund-raised-topic
         project-view-channel: project_view
         profile-view: profile_view_channel
         goal-completed: goal_completed_topic

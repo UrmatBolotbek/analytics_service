@@ -1,5 +1,6 @@
 package faang.school.analytics.mapper.analytics_event;
 
+import faang.school.analytics.event.FundRaisedEvent;
 import faang.school.analytics.event.ProjectViewEvent;
 import faang.school.analytics.event.AnalyticsEventResponseDto;
 import faang.school.analytics.event.GoalCompletedEvent;
@@ -14,6 +15,10 @@ import org.reactivestreams.Publisher;
 public interface AnalyticsEventMapper {
 
     AnalyticsEventResponseDto toDto(AnalyticsEvent analyticsEvent);
+
+    @Mapping(source = "userId", target = "actorId")
+    @Mapping(source = "donatedAt", target = "receivedAt")
+    AnalyticsEvent toEntity(FundRaisedEvent fundRaisedEvent);
 
     @Mapping(source = "projectId", target = "receiverId")
     @Mapping(source = "userId", target = "actorId")

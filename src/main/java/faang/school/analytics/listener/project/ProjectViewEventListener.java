@@ -19,7 +19,7 @@ public class ProjectViewEventListener extends AbstractEventListener<ProjectViewE
     public ProjectViewEventListener(ObjectMapper objectMapper,
                                     AnalyticsEventService analyticsEventService,
                                     AnalyticsEventMapper analyticsEventMapper) {
-        super(objectMapper, analyticsEventService, analyticsEventMapper);
+        super(analyticsEventService, analyticsEventMapper, objectMapper);
     }
 
     @Override
