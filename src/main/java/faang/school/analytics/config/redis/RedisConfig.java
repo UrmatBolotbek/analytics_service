@@ -1,6 +1,6 @@
 package faang.school.analytics.config.redis;
 
-import faang.school.analytics.listener.FundRaisedEventListener;
+import faang.school.analytics.listener.event.FundRaisedEventListener;
 import faang.school.analytics.listener.goal.GoalCompletedEventListener;
 import faang.school.analytics.listener.project.ProjectViewEventListener;
 import lombok.RequiredArgsConstructor;
@@ -22,19 +22,20 @@ public class RedisConfig {
 
     private final GoalCompletedEventListener goalCompletedEventListener;
     private final ProjectViewEventListener projectViewEventListener;
+    private final FundRaisedEventListener fundRaisedEventListener;
 
     @Value("${spring.data.redis.host}")
     private String redisHost;
 
     @Value("${spring.data.redis.port}")
     private int redisPort;
-    @Value("${spring.data.redis.channel.project-view-channel}")
+    @Value("${spring.data.redis.channels.project-view-channel}")
     private String topicProjectView;
 
-    @Value("${spring.data.redis.channel.fund-raised}")
+    @Value("${spring.data.redis.channels.fund-raised}")
     private String fundRaisedTopic;
 
-    @Value("${spring.data.redis.channel.goal-completed}")
+    @Value("${spring.data.redis.channels.goal-completed}")
     private String topicGoalCompleted;
 
     @Bean
@@ -53,29 +54,18 @@ public class RedisConfig {
     }
 
     @Bean
-    RedisMessageListenerContainer redisContainer(MessageListenerAdapter fundRaisedListener) {
+    RedisMessageListenerContainer redisContainer() {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
-        container.addMessageListener(fundRaisedListener, fundRaisedTopic());
 
-        MessageListenerAdapter projectViewListener = getListenerAdapter(projectViewEventListener);
-        container.addMessageListener(projectViewListener, new ChannelTopic(topicProjectView));
-        MessageListenerAdapter goalCompletedListener = getListenerAdapter(goalCompletedEventListener);
-        container.addMessageListener(goalCompletedListener, new ChannelTopic(topicGoalCompleted));
+        addMessageListenerInContainer(projectViewEventListener, topicProjectView, container);
+        addMessageListenerInContainer(goalCompletedEventListener, topicGoalCompleted, container);
+        addMessageListenerInContainer(fundRaisedEventListener, fundRaisedTopic, container);
+
         return container;
     }
 
-    @Bean
-    MessageListenerAdapter fundRaisedListener(FundRaisedEventListener fundRaisedEventListener) {
-        return new MessageListenerAdapter(fundRaisedEventListener);
-    }
-
-    @Bean
-    ChannelTopic fundRaisedTopic() {
-        return new ChannelTopic(fundRaisedTopic);
-    }
-
-    private MessageListenerAdapter getListenerAdapter(MessageListener listenerAdapter) {
-        return new MessageListenerAdapter(listenerAdapter);
+    private void addMessageListenerInContainer(MessageListener listenerAdapter, String topic, RedisMessageListenerContainer container) {
+        container.addMessageListener(new MessageListenerAdapter(listenerAdapter), new ChannelTopic(topic));
     }
 }
