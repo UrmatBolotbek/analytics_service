@@ -26,6 +26,8 @@ spring:
         project-view-channel: project_view
         profile-view: profile_view_channel
         goal-completed: goal_completed_topic
+        search-appearance-channel: search-appearance-topic
+
 
 server:
   port: 8086

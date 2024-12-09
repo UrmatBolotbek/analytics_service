@@ -4,6 +4,7 @@ import faang.school.analytics.event.FundRaisedEvent;
 import faang.school.analytics.event.ProjectViewEvent;
 import faang.school.analytics.event.AnalyticsEventResponseDto;
 import faang.school.analytics.event.GoalCompletedEvent;
+import faang.school.analytics.event.SearchAppearanceEvent;
 import faang.school.analytics.model.AnalyticsEvent;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -27,4 +28,9 @@ public interface AnalyticsEventMapper {
     @Mapping(source = "userId", target = "actorId")
     @Mapping(source = "completedAt", target = "receivedAt")
     AnalyticsEvent toAnalyticsEvent(GoalCompletedEvent goalCompletedEvent);
+
+    @Mapping(source = "userId", target = "receiverId")
+    @Mapping(source = "searchingUserId", target = "actorId")
+    @Mapping(source = "viewedAt", target = "receivedAt")
+    AnalyticsEvent toAnalyticsEventFromSearchAppearance(SearchAppearanceEvent searchAppearanceEvent);
 }
