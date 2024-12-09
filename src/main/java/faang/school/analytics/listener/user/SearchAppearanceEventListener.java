@@ -25,10 +25,15 @@ public class SearchAppearanceEventListener extends AbstractEventListener<SearchA
     @Override
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, SearchAppearanceEvent.class, event -> {
-            AnalyticsEvent analyticsEvent = analyticsEventMapper.toAnalyticsEventFromSearchAppearance(event);
-            analyticsEvent.setEventType(EventType.fromEventClass(event.getClass()));
-            analyticsEventService.save(analyticsEvent);
-            log.info("The user profile {} was viewed by the user {}", analyticsEvent.getId(), event.getUserId());
+
+            event.getUserIds().forEach(userId -> {
+                AnalyticsEvent analyticsEvent = analyticsEventMapper.toAnalyticsEventFromSearchAppearance(
+                        userId, event.getSearchingUserId(), event.getViewedAt());
+
+                analyticsEvent.setEventType(EventType.fromEventClass(event.getClass()));
+                analyticsEventService.save(analyticsEvent);
+                log.info("The user profile {} was viewed by the user {}", analyticsEvent.getId(), event.getSearchingUserId());
+            });
         });
     }
 }

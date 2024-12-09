@@ -20,10 +20,12 @@ import org.springframework.data.redis.connection.Message;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class SearchAppearanceEventListenerTest {
@@ -33,16 +35,19 @@ class SearchAppearanceEventListenerTest {
 
     @InjectMocks
     private SearchAppearanceEventListener listener;
+
     @Mock
     private ObjectMapper objectMapper;
+
     @Mock
     private AnalyticsEventService analyticsEventService;
+
     @Spy
     private AnalyticsEventMapperImpl mapper;
 
     private Message message;
+
     private SearchAppearanceEvent searchAppearanceEvent;
-    private AnalyticsEvent analyticsEvent;
 
     @BeforeEach
     public void setup() {
@@ -57,28 +62,35 @@ class SearchAppearanceEventListenerTest {
                 return new byte[0];
             }
         };
+
         searchAppearanceEvent = SearchAppearanceEvent.builder()
-                .userId(10L)
+                .userIds(List.of(10L, 20L))
                 .searchingUserId(99L)
                 .viewedAt(LocalDateTime.of(2024, 12, 12, 12, 12))
-                .build();
-        analyticsEvent = AnalyticsEvent.builder()
-                .receiverId(10L)
-                .actorId(99L)
-                .receivedAt(LocalDateTime.of(2024, 12, 12, 12, 12))
                 .build();
     }
 
     @Test
     void testOnMessageSuccess() throws IOException {
         byte[] pattern = new byte[]{1, 2, 3, 4};
-
-        when(mapper.toAnalyticsEventFromSearchAppearance(searchAppearanceEvent)).thenReturn(analyticsEvent);
-        when(objectMapper.readValue(message.getBody(), SearchAppearanceEvent.class)).thenReturn(searchAppearanceEvent);
+        when(objectMapper.readValue(any(byte[].class), eq(SearchAppearanceEvent.class)))
+                .thenReturn(searchAppearanceEvent);
 
         listener.onMessage(message, pattern);
-        verify(analyticsEventService).save(analyticsEventCaptor.capture());
-        AnalyticsEvent analyticsEvent = analyticsEventCaptor.getValue();
-        assertEquals(EventType.PROFILE_APPEARED_IN_SEARCH, analyticsEvent.getEventType());
+
+        verify(analyticsEventService, times(2)).save(analyticsEventCaptor.capture());
+
+        List<AnalyticsEvent> capturedEvents = analyticsEventCaptor.getAllValues();
+
+        assertEquals(2, capturedEvents.size());
+        AnalyticsEvent firstEvent = capturedEvents.get(0);
+        assertEquals(10L, firstEvent.getReceiverId());
+        assertEquals(99L, firstEvent.getActorId());
+        assertEquals(searchAppearanceEvent.getViewedAt(), firstEvent.getReceivedAt());
+
+        AnalyticsEvent secondEvent = capturedEvents.get(1);
+        assertEquals(20L, secondEvent.getReceiverId());
+        assertEquals(99L, secondEvent.getActorId());
+        assertEquals(searchAppearanceEvent.getViewedAt(), secondEvent.getReceivedAt());
     }
 }
