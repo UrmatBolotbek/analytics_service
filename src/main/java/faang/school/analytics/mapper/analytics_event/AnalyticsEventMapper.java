@@ -4,11 +4,12 @@ import faang.school.analytics.event.FundRaisedEvent;
 import faang.school.analytics.event.ProjectViewEvent;
 import faang.school.analytics.event.AnalyticsEventResponseDto;
 import faang.school.analytics.event.GoalCompletedEvent;
-import faang.school.analytics.event.SearchAppearanceEvent;
 import faang.school.analytics.model.AnalyticsEvent;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
+
+import java.time.LocalDateTime;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface AnalyticsEventMapper {
@@ -32,5 +33,5 @@ public interface AnalyticsEventMapper {
     @Mapping(source = "userId", target = "receiverId")
     @Mapping(source = "searchingUserId", target = "actorId")
     @Mapping(source = "viewedAt", target = "receivedAt")
-    AnalyticsEvent toAnalyticsEventFromSearchAppearance(SearchAppearanceEvent searchAppearanceEvent);
+    AnalyticsEvent toAnalyticsEventFromSearchAppearance(Long userId, Long searchingUserId, LocalDateTime viewedAt);
 }
