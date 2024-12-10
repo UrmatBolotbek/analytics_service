@@ -23,11 +23,11 @@ spring:
       host: localhost
       channels:
         fund-raised: fund-raised-topic
-        project-view-channel: project_view
-        profile-view: profile_view_channel
-        goal-completed: goal_completed_topic
+        project-view-channel: project-view
+        profile-view: profile-view-channel
+        goal-completed: goal-completed-topic
         search-appearance-channel: search-appearance-topic
-
+        follower: follower-channel
 
 server:
   port: 8086
