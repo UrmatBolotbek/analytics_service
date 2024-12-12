@@ -1,5 +1,6 @@
 package faang.school.analytics.config.redis;
 
+import faang.school.analytics.listener.bought.AdBoughtEventListener;
 import faang.school.analytics.listener.event.FundRaisedEventListener;
 import faang.school.analytics.listener.goal.GoalCompletedEventListener;
 import faang.school.analytics.listener.project.ProjectViewEventListener;
@@ -25,6 +26,7 @@ public class RedisConfig {
     private final ProjectViewEventListener projectViewEventListener;
     private final SearchAppearanceEventListener searchAppearanceEventListener;
     private final FundRaisedEventListener fundRaisedEventListener;
+    private final AdBoughtEventListener adBoughtEventListener;
 
     @Value("${spring.data.redis.host}")
     private String redisHost;
@@ -38,6 +40,8 @@ public class RedisConfig {
     private String topicGoalCompleted;
     @Value("${spring.data.redis.channels.search-appearance-channel}")
     private String topicSearchAppearance;
+    @Value("${spring.data.redis.channels.ad-bought-channel}")
+    private String topicAdBought;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {

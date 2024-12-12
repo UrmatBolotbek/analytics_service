@@ -27,7 +27,7 @@ spring:
         profile-view: profile_view_channel
         goal-completed: goal_completed_topic
         search-appearance-channel: search-appearance-topic
-
+        ad-bought-channel: ad-bought-topic
 
 server:
   port: 8086
