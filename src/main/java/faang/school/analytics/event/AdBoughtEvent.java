@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 public class AdBoughtEvent {
     private Long postId;
-    private Long userIs;
+    private Long userId;
     private Double paymentAmount;
     private Integer duration;
     private LocalDateTime purchaseTime;

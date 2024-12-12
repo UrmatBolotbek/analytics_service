@@ -3,6 +3,7 @@ package faang.school.analytics.listener.project.project_view;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.analytics.event.ProjectViewEvent;
 import faang.school.analytics.listener.project.ProjectViewEventListener;
+import faang.school.analytics.mapper.analytics_event.AnalyticsEventMapper;
 import faang.school.analytics.mapper.analytics_event.AnalyticsEventMapperImpl;
 import faang.school.analytics.model.AnalyticsEvent;
 import faang.school.analytics.model.EventType;
@@ -39,7 +40,7 @@ public class ProjectViewEventListenerTest {
     @Mock
     private AnalyticsEventService analyticsEventService;
     @Spy
-    private AnalyticsEventMapperImpl mapper;
+    private AnalyticsEventMapper mapper;
 
     private Message message;
     private ProjectViewEvent viewEvent;
