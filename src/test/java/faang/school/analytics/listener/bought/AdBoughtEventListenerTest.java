@@ -1,83 +1,89 @@
 package faang.school.analytics.listener.bought;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.analytics.event.AdBoughtEvent;
 import faang.school.analytics.mapper.analytics_event.AnalyticsEventMapper;
-import faang.school.analytics.mapper.analytics_event.AnalyticsEventMapperImpl;
 import faang.school.analytics.model.AnalyticsEvent;
 import faang.school.analytics.model.EventType;
 import faang.school.analytics.service.analytics_event.AnalyticsEventService;
-
-
-import jakarta.validation.constraints.NotNull;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.connection.Message;
 
+import java.io.IOException;
 
-import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-
 @ExtendWith(MockitoExtension.class)
-public class AdBoughtEventListenerTest {
-    @Captor
-    private ArgumentCaptor<AnalyticsEvent> analyticsEventArgumentCaptor;
-
-    @InjectMocks
-    private AdBoughtEventListener listener;
-    @Mock
-    private ObjectMapper objectMapper;
+class AdBoughtEventListenerTest {
     @Mock
     private AnalyticsEventService analyticsEventService;
-    @Spy
-    private AnalyticsEventMapperImpl mapper;
 
+    @Mock
+    private ObjectMapper objectMapper;
+
+    @Mock
+    private AnalyticsEventMapper analyticsEventMapper;
+
+    @Mock
     private Message message;
-    private AdBoughtEvent adBoughtEvent;
+
+    @InjectMocks
+    private AdBoughtEventListener adBoughtEventListener;
+
     private AnalyticsEvent analyticsEvent;
+    private AdBoughtEvent adBoughtEvent;
 
     @BeforeEach
-    public void setup() {
-        message = new Message() {
-            @Override
-            public byte @NotNull [] getBody() {
-                return new byte[15];
-            }
+    void setUp() {
+        adBoughtEvent = AdBoughtEvent.builder().build();
 
-            @Override
-            public byte @NotNull [] getChannel() {
-                return new byte[0];
-            }
-        };
-        adBoughtEvent = AdBoughtEvent.builder()
-                .postId(10L)
-                .userId(99L)
-                .paymentAmount(20.5)
-                .duration(3)
-                .purchaseTime(LocalDateTime.of(2024, 12, 12, 12, 22))
-                .build();
         analyticsEvent = AnalyticsEvent.builder()
-                .actorId(99L)
-                .receiverId(10L)
-                .receivedAt(LocalDateTime.of(2024,12,12,12,12))
+                .eventType(EventType.AD_BOUGHT)
                 .build();
+
+        String json = """
+                {
+                    "userId": 1,
+                    "postId": 10,
+                    "paymentAmount": 20.5,
+                    "duration": 3,
+                    "purchaseTime": "2024-12-12T12:22:00"
+                }""";
+
+        when(message.getBody()).thenReturn(json.getBytes());
     }
 
     @Test
-    void testOnMessageSuccess() throws Exception {
-        byte[] pattern = new byte[]{1, 2, 3, 4};
+    @DisplayName("Should handle event successfully")
+    void onMessageShouldHandleEventSuccessfully() throws IOException {
+        when(objectMapper.readValue(any(byte[].class), eq(AdBoughtEvent.class)))
+                .thenReturn(adBoughtEvent);
+        when(analyticsEventMapper.toAnalyticsEvent(adBoughtEvent)).thenReturn(analyticsEvent);
 
-        when(mapper.toAnalyticsEvent(adBoughtEvent)).thenReturn(analyticsEvent);
-        when(objectMapper.readValue(message.getBody(), AdBoughtEvent.class)).thenReturn(adBoughtEvent);
-        listener.onMessage(message, pattern);
-        verify(analyticsEventService).save(analyticsEventArgumentCaptor.capture());
-        AnalyticsEvent capturedEvent = analyticsEventArgumentCaptor.getValue();
-        assertEquals(EventType.PROJECT_VIEW, capturedEvent.getEventType());
+        adBoughtEventListener.onMessage(message, null);
+
+        verify(analyticsEventMapper).toAnalyticsEvent(adBoughtEvent);
+        verify(analyticsEventService).save(analyticsEvent);
+    }
+
+    @Test
+    void onMessageShouldThrowRuntimeExceptionWhenDeserializationFails() throws IOException {
+        when(objectMapper.readValue(any(byte[].class), eq(AdBoughtEvent.class)))
+                .thenThrow(new JsonProcessingException("Test exception") {
+                });
+
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
+                adBoughtEventListener.onMessage(message, null));
+        verify(analyticsEventService, never()).save(any());
     }
 }

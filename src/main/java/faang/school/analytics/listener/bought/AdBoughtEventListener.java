@@ -24,8 +24,7 @@ public class AdBoughtEventListener extends AbstractEventListener<AdBoughtEvent> 
     public void onMessage(Message message, byte[] pattern) {
         handleEvent(message, AdBoughtEvent.class, event -> {
             AnalyticsEvent analyticsEvent = analyticsEventMapper.toAnalyticsEvent(event);
-            analyticsEvent.setEventType(EventType.fromEventClass(
-                    analyticsEvent.getClass()));
+            analyticsEvent.setEventType(EventType.fromEventClass(event.getClass()));
             analyticsEventService.save(analyticsEvent);
         });
     }
