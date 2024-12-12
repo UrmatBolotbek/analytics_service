@@ -7,10 +7,8 @@ import lombok.Data;
 @Data
 @Builder
 public class AnalyticsEventResponseDto {
-
     private long id;
     private long receiverId;
     private long actorId;
     private EventType eventType;
-
 }
