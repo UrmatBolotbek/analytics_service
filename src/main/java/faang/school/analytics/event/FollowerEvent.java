@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FollowerEvent {
-    String followerId;
-    String followeeId;
-    LocalDateTime receivedAt;
+    private String followerId;
+    private String followeeId;
+    private LocalDateTime receivedAt;
 }
