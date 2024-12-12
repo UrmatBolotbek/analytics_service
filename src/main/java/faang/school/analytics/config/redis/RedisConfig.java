@@ -67,6 +67,7 @@ public class RedisConfig {
         addMessageListenerInContainer(goalCompletedEventListener, topicGoalCompleted, container);
         addMessageListenerInContainer(searchAppearanceEventListener, topicSearchAppearance, container);
         addMessageListenerInContainer(fundRaisedEventListener, fundRaisedTopic, container);
+        addMessageListenerInContainer(adBoughtEventListener, topicAdBought, container);
 
         return container;
     }
