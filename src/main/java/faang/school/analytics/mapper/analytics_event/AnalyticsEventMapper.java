@@ -32,6 +32,8 @@ public interface AnalyticsEventMapper {
     @Mapping(source = "completedAt", target = "receivedAt")
     AnalyticsEvent toAnalyticsEvent(GoalCompletedEvent goalCompletedEvent);
 
+    @Mapping(source = "followerId", target = "actorId")
+    @Mapping(source = "followeeId", target = "receiverId")
     AnalyticsEvent toAnalyticsEvent(FollowerEvent followerEvent);
 
     @Mapping(source = "userId", target = "receiverId")

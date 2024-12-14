@@ -44,7 +44,7 @@ public class RedisConfig {
     private String topicSearchAppearance;
     @Value("${spring.data.redis.channels.follower}")
     private String topicFollower;
-    @Value("${spring.data.redis.channels.comment-notification-channel}")
+    @Value("${spring.data.redis.channels.comment-channel}")
     private String topicComment;
 
     @Bean
