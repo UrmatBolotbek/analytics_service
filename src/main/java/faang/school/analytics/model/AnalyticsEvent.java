@@ -26,12 +26,6 @@ public class AnalyticsEvent {
     @Column(name = "actor_id", nullable = false)
     private long actorId;
 
-    @Column(name = "followee_Id", nullable = false)
-    private long followeeId;
-
-    @Column(name = "follower_Id", nullable = false)
-    private long followerId;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "event_type", nullable = false)
     private EventType eventType;
