@@ -1,13 +1,13 @@
 package faang.school.analytics.model;
 
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
 import faang.school.analytics.event.CommentEvent;
 import faang.school.analytics.event.FundRaisedEvent;
 import faang.school.analytics.event.PremiumBoughtEvent;
 import faang.school.analytics.event.ProjectViewEvent;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import faang.school.analytics.event.GoalCompletedEvent;
 import faang.school.analytics.event.SearchAppearanceEvent;
 
@@ -48,6 +48,14 @@ public enum EventType {
             throw new IllegalArgumentException("Unknown event class: " + clazz);
         }
         return eventType;
+    }
+
+    public static EventType fromString(String eventTypeString) {
+        try {
+            return valueOf(eventTypeString.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid event type: " + eventTypeString);
+        }
     }
 
     public static EventType of(int type) {

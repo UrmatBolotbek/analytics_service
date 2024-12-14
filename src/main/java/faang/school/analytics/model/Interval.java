@@ -1,13 +1,27 @@
 package faang.school.analytics.model;
 
-import lombok.Builder;
-import lombok.Data;
+import java.util.Locale;
 
-@Data
-@Builder
-public class Interval {
+public enum Interval {
+    DAY,
+    WEEK,
+    MONTH,
+    YEAR;
 
-    private int number;
-    private IntervalType intervalType;
+    public static Interval of(int type) {
+        for (Interval interval : Interval.values()) {
+            if (interval.ordinal() == type) {
+                return interval;
+            }
+        }
+        throw new IllegalArgumentException("Unknown interval: " + type);
+    }
 
+    public static Interval fromString(String intervalString) {
+        try {
+            return valueOf(intervalString.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid interval: " + intervalString);
+        }
+    }
 }

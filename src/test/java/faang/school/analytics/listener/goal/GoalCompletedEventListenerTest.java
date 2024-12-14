@@ -5,7 +5,7 @@ import faang.school.analytics.event.GoalCompletedEvent;
 import faang.school.analytics.mapper.analytics_event.AnalyticsEventMapperImpl;
 import faang.school.analytics.model.AnalyticsEvent;
 import faang.school.analytics.model.EventType;
-import faang.school.analytics.service.analytics_event.AnalyticsEventService;
+import faang.school.analytics.service.AnalyticsEventService;
 import org.jetbrains.annotations.NotNull;
 
 import org.junit.jupiter.api.BeforeEach;
