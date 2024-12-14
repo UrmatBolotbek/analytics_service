@@ -4,4 +4,4 @@ databaseChangeLog:
   - include:
       file: db/changelog/changeset/analytics_V002_follower_add.sql
   - include:
-      file: db/changelog/changeset/analytics_V003__follower_delete.sql
+      file: db/changelog/changeset/analytics_V003_follower_delete.sql
