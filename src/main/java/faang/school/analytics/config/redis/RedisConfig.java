@@ -1,5 +1,6 @@
 package faang.school.analytics.config.redis;
 
+import faang.school.analytics.listener.comment.CommentEventListener;
 import faang.school.analytics.listener.event.FundRaisedEventListener;
 import faang.school.analytics.listener.goal.GoalCompletedEventListener;
 import faang.school.analytics.listener.project.ProjectViewEventListener;
@@ -27,6 +28,7 @@ public class RedisConfig {
     private final SearchAppearanceEventListener searchAppearanceEventListener;
     private final FundRaisedEventListener fundRaisedEventListener;
     private final FollowerEventListener followerEventListener;
+    private final CommentEventListener commentEventListener;
 
     @Value("${spring.data.redis.host}")
     private String redisHost;
@@ -42,6 +44,8 @@ public class RedisConfig {
     private String topicSearchAppearance;
     @Value("${spring.data.redis.channels.follower}")
     private String topicFollower;
+    @Value("${spring.data.redis.channels.comment-notification-channel}")
+    private String topicComment;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -68,6 +72,7 @@ public class RedisConfig {
         addMessageListenerInContainer(searchAppearanceEventListener, topicSearchAppearance, container);
         addMessageListenerInContainer(fundRaisedEventListener, fundRaisedTopic, container);
         addMessageListenerInContainer(followerEventListener, topicFollower, container);
+        addMessageListenerInContainer(commentEventListener, topicComment, container);
 
         return container;
     }

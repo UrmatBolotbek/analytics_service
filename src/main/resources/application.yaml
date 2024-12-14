@@ -28,6 +28,7 @@ spring:
         goal-completed: goal-completed-topic
         search-appearance-channel: search-appearance-topic
         follower: follower-channel
+        comment-notification-channel: comment-topic
 
 server:
   port: 8086
