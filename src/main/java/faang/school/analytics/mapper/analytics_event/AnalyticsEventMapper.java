@@ -3,7 +3,7 @@ package faang.school.analytics.mapper.analytics_event;
 import faang.school.analytics.event.FollowerEvent;
 import faang.school.analytics.event.FundRaisedEvent;
 import faang.school.analytics.event.ProjectViewEvent;
-import faang.school.analytics.event.AnalyticsEventResponseDto;
+import faang.school.analytics.dto.AnalyticsEventResponseDto;
 import faang.school.analytics.event.GoalCompletedEvent;
 import faang.school.analytics.model.AnalyticsEvent;
 import org.mapstruct.Mapper;
