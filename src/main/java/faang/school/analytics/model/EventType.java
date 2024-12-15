@@ -1,5 +1,6 @@
 package faang.school.analytics.model;
 
+import faang.school.analytics.event.CommentEvent;
 import faang.school.analytics.event.FundRaisedEvent;
 import faang.school.analytics.event.ProjectViewEvent;
 
@@ -35,6 +36,7 @@ public enum EventType {
         classToEventTypeMap.put(GoalCompletedEvent.class, GOAL_COMPLETED);
         classToEventTypeMap.put(ProjectViewEvent.class, PROJECT_VIEW);
         classToEventTypeMap.put(SearchAppearanceEvent.class, PROFILE_APPEARED_IN_SEARCH);
+        classToEventTypeMap.put(CommentEvent.class, POST_COMMENT);
     }
 
     public static EventType fromEventClass(Class<?> clazz) {
