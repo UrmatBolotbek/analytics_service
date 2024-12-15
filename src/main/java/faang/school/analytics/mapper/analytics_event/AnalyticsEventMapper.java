@@ -40,6 +40,7 @@ public interface AnalyticsEventMapper {
     AnalyticsEvent toAnalyticsEventFromSearchAppearance(Long userId, Long searchingUserId, LocalDateTime viewedAt);
 
     @Mapping(source = "userId", target = "actorId")
+    @Mapping(source = "userId", target = "receiverId")
     @Mapping(source = "purchaseDate", target = "receivedAt")
     AnalyticsEvent toEntity(PremiumBoughtEvent premiumBoughtEvent);
 }
