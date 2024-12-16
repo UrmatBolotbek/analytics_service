@@ -29,6 +29,7 @@ spring:
         search-appearance-channel: search-appearance-topic
         follower: follower-channel
         premium-bought-channel: premium-bought
+        comment-channel: comment-topic
 
 server:
   port: 8086

@@ -70,9 +70,8 @@ public class AnalyticsEventService {
     }
 
     private List<AnalyticsEventResponseDto> getSortedDtoList(Stream<AnalyticsEvent> analyticsEvent) {
-        return  analyticsEvent.sorted(Comparator.comparing(AnalyticsEvent::getReceivedAt))
+        return analyticsEvent.sorted(Comparator.comparing(AnalyticsEvent::getReceivedAt))
                 .map(mapper::toDto)
                 .toList();
     }
-
 }
