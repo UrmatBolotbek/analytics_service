@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import faang.school.analytics.event.FundRaisedEvent;
 import faang.school.analytics.event.GoalCompletedEvent;
 import faang.school.analytics.event.SearchAppearanceEvent;
 
