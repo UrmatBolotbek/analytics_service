@@ -6,7 +6,7 @@ import faang.school.analytics.listener.AbstractEventListener;
 import faang.school.analytics.mapper.analytics_event.AnalyticsEventMapper;
 import faang.school.analytics.model.AnalyticsEvent;
 import faang.school.analytics.model.EventType;
-import faang.school.analytics.service.analytics_event.AnalyticsEventService;
+import faang.school.analytics.service.AnalyticsEventService;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 
