@@ -1,8 +1,9 @@
-package faang.school.analytics.listener.event;
+package faang.school.analytics.listener.premium;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.analytics.event.FundRaisedEvent;
+import faang.school.analytics.event.PremiumBoughtEvent;
 import faang.school.analytics.mapper.analytics_event.AnalyticsEventMapper;
 import faang.school.analytics.model.AnalyticsEvent;
 import faang.school.analytics.model.EventType;
@@ -21,10 +22,12 @@ import java.io.IOException;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class FundRaisedEventListenerTest {
+public class PremiumBoughtEventListenerTest {
     @Mock
     private AnalyticsEventService analyticsEventService;
 
@@ -38,25 +41,25 @@ class FundRaisedEventListenerTest {
     private Message message;
 
     @InjectMocks
-    private FundRaisedEventListener fundRaisedEventListener;
+    private PremiumBoughtEventListener premiumBoughtEventListener;
 
     private AnalyticsEvent analyticsEvent;
-    private FundRaisedEvent fundRaisedEvent;
+    private PremiumBoughtEvent premiumBoughtEvent;
 
     @BeforeEach
     void setUp() {
-        fundRaisedEvent = FundRaisedEvent.builder().build();
+        premiumBoughtEvent = PremiumBoughtEvent.builder().build();
 
         analyticsEvent = AnalyticsEvent.builder()
-                .eventType(EventType.fromEventClass(fundRaisedEvent.getClass()))
+                .eventType(EventType.fromEventClass(premiumBoughtEvent.getClass()))
                 .build();
 
         String json = """
                 {
                     "userId": 1,
-                    "projectId": 2,
-                    "amount": 10000,
-                    "donatedAt": "2024-12-15T13:35:15"
+                    "amount": 10,
+                    "period": 30,
+                    "purchaseDate": "2024-12-15T13:35:15"
                 }""";
 
         when(message.getBody()).thenReturn(json.getBytes());
@@ -65,13 +68,13 @@ class FundRaisedEventListenerTest {
     @Test
     @DisplayName("Should handle event successfully")
     void onMessageShouldHandleEventSuccessfully() throws IOException {
-        when(objectMapper.readValue(any(byte[].class), eq(FundRaisedEvent.class)))
-                .thenReturn(fundRaisedEvent);
-        when(analyticsEventMapper.toEntity(fundRaisedEvent)).thenReturn(analyticsEvent);
+        when(objectMapper.readValue(any(byte[].class), eq(PremiumBoughtEvent.class)))
+                .thenReturn(premiumBoughtEvent);
+        when(analyticsEventMapper.toEntity(premiumBoughtEvent)).thenReturn(analyticsEvent);
 
-        fundRaisedEventListener.onMessage(message, null);
+        premiumBoughtEventListener.onMessage(message, null);
 
-        verify(analyticsEventMapper).toEntity(fundRaisedEvent);
+        verify(analyticsEventMapper).toEntity(premiumBoughtEvent);
         verify(analyticsEventService).save(analyticsEvent);
     }
 
@@ -82,7 +85,7 @@ class FundRaisedEventListenerTest {
                 });
 
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
-                fundRaisedEventListener.onMessage(message, null));
+                premiumBoughtEventListener.onMessage(message, null));
         verify(analyticsEventService, never()).save(any());
     }
 }
