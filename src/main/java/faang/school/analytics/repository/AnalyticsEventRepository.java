@@ -10,6 +10,8 @@ import java.util.stream.Stream;
 
 @Repository
 public interface AnalyticsEventRepository extends CrudRepository<AnalyticsEvent, Long> {
+
     Stream<AnalyticsEvent> findByReceiverIdAndEventTypeAndReceivedAtAfter(long receiverId, EventType eventType, LocalDateTime from);
+
     Stream<AnalyticsEvent> findByReceiverIdAndEventTypeAndReceivedAtBetween(long receiverId, EventType eventType, LocalDateTime from, LocalDateTime to);
 }
