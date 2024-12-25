@@ -17,4 +17,5 @@ public class AdBoughtEvent {
     private Double paymentAmount;
     private Integer duration;
     private LocalDateTime purchaseTime;
+    private Long ownerId;
 }
