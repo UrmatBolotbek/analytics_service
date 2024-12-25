@@ -6,7 +6,7 @@ import faang.school.analytics.listener.AbstractEventListener;
 import faang.school.analytics.mapper.analytics_event.AnalyticsEventMapper;
 import faang.school.analytics.model.AnalyticsEvent;
 import faang.school.analytics.model.EventType;
-import faang.school.analytics.service.analytics_event.AnalyticsEventService;
+import faang.school.analytics.service.AnalyticsEventService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -24,16 +24,13 @@ public class SearchAppearanceEventListener extends AbstractEventListener<SearchA
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        handleEvent(message, SearchAppearanceEvent.class, event -> {
+        handleEvent(message, SearchAppearanceEvent.class, event -> event.getUserIds().forEach(userId -> {
+            AnalyticsEvent analyticsEvent = analyticsEventMapper.toAnalyticsEventFromSearchAppearance(
+                    userId, event.getSearchingUserId(), event.getViewedAt());
 
-            event.getUserIds().forEach(userId -> {
-                AnalyticsEvent analyticsEvent = analyticsEventMapper.toAnalyticsEventFromSearchAppearance(
-                        userId, event.getSearchingUserId(), event.getViewedAt());
-
-                analyticsEvent.setEventType(EventType.fromEventClass(event.getClass()));
-                analyticsEventService.save(analyticsEvent);
-                log.info("The user profile {} was viewed by the user {}", analyticsEvent.getId(), event.getSearchingUserId());
-            });
-        });
+            analyticsEvent.setEventType(EventType.fromEventClass(event.getClass()));
+            analyticsEventService.save(analyticsEvent);
+            log.info("The user profile {} was viewed by the user {}", analyticsEvent.getId(), event.getSearchingUserId());
+        }));
     }
 }
