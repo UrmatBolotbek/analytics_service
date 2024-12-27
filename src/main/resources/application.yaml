@@ -27,6 +27,7 @@ spring:
         profile-view: profile-view-channel
         goal-completed: goal-completed-topic
         search-appearance-channel: search-appearance-topic
+        ad-bought-channel: ad-bought-topic
         follower: follower-channel
         premium-bought-channel: premium-bought
         comment-channel: comment-topic

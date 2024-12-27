@@ -1,5 +1,6 @@
 package faang.school.analytics.config.redis;
 
+import faang.school.analytics.listener.bought.AdBoughtEventListener;
 import faang.school.analytics.listener.comment.CommentEventListener;
 import faang.school.analytics.listener.event.FundRaisedEventListener;
 import faang.school.analytics.listener.goal.GoalCompletedEventListener;
@@ -31,6 +32,7 @@ public class RedisConfig {
     private final FollowerEventListener followerEventListener;
     private final PremiumBoughtEventListener premiumBoughtEventListener;
     private final CommentEventListener commentEventListener;
+    private final AdBoughtEventListener adBoughtEventListener;
 
     @Value("${spring.data.redis.host}")
     private String redisHost;
@@ -50,6 +52,8 @@ public class RedisConfig {
     private String premiumBoughtEventTopic;
     @Value("${spring.data.redis.channels.comment-channel}")
     private String topicComment;
+    @Value("${spring.data.redis.channels.ad-bought-channel}")
+    private String topicAdBought;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -78,6 +82,7 @@ public class RedisConfig {
         addMessageListenerInContainer(followerEventListener, topicFollower, container);
         addMessageListenerInContainer(premiumBoughtEventListener, premiumBoughtEventTopic, container);
         addMessageListenerInContainer(commentEventListener, topicComment, container);
+        addMessageListenerInContainer(adBoughtEventListener, topicAdBought, container);
 
         return container;
     }

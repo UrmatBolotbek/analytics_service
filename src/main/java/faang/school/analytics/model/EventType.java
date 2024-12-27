@@ -1,5 +1,9 @@
 package faang.school.analytics.model;
 
+import faang.school.analytics.event.AdBoughtEvent;
+import faang.school.analytics.event.FundRaisedEvent;
+import faang.school.analytics.event.ProjectViewEvent;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -29,6 +33,7 @@ public enum EventType {
     PROFILE_APPEARED_IN_SEARCH,
     PROJECT_APPEARED_IN_SEARCH,
     FUND_RAISED,
+    AD_BOUGHT,
     PREMIUM_BOUGHT;
 
     private static final Map<Class<?>, EventType> classToEventTypeMap = new HashMap<>();
@@ -40,6 +45,7 @@ public enum EventType {
         classToEventTypeMap.put(SearchAppearanceEvent.class, PROFILE_APPEARED_IN_SEARCH);
         classToEventTypeMap.put(PremiumBoughtEvent.class, PREMIUM_BOUGHT);
         classToEventTypeMap.put(CommentEvent.class, POST_COMMENT);
+        classToEventTypeMap.put(AdBoughtEvent.class, AD_BOUGHT);
     }
 
     public static EventType fromEventClass(Class<?> clazz) {
