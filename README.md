@@ -1,109 +1,49 @@
-# Service Template
+# Analytics Service
 
-Стандартный шаблон проекта на SpringBoot
+**Analytics Service** is a dedicated microservice within our unified application ecosystem. It gathers and processes events from various parts of the system to provide comprehensive analytics data across all domains. The service supports flexible querying by any entity (using its ID), event type, and time interval, enabling data-driven insights throughout the application.
 
-# Использованные технологии
+---
 
-* [Spring Boot](https://spring.io/projects/spring-boot) – как основной фрэймворк
-* [PostgreSQL](https://www.postgresql.org/) – как основная реляционная база данных
-* [Redis](https://redis.io/) – как кэш и очередь сообщений через pub/sub
-* [testcontainers](https://testcontainers.com/) – для изолированного тестирования с базой данных
-* [Liquibase](https://www.liquibase.org/) – для ведения миграций схемы БД
-* [Gradle](https://gradle.org/) – как система сборки приложения
-* [Lombok](https://projectlombok.org/) – для удобной работы с POJO классами
-* [MapStruct](https://mapstruct.org/) – для удобного маппинга между POJO классами
+## Overview
 
-# База данных
+- **Unified Analytics Platform:**  
+  Collects analytics events from all microservices (such as user_service, post_service, account_service, payment_service, etc.) and aggregates data by entity ID (receiverId), event type, and time interval.
 
-* База поднимается в отдельном сервисе [infra](../infra)
-* Redis поднимается в единственном инстансе тоже в [infra](../infra)
-* Liquibase сам накатывает нужные миграции на голый PostgreSql при старте приложения
-* В тестах используется [testcontainers](https://testcontainers.com/), в котором тоже запускается отдельный инстанс
-  postgres
-* В коде продемонстрирована работа как с JdbcTemplate, так и с JPA (Hibernate)
+- **Flexible Querying:**  
+  The REST endpoint (e.g., `/analytics`) accepts:
+  - An **entity ID** to target the specific data.
+  - An **event type** as a string (or number) that is converted to an enum (`EventType`), with case-insensitive matching.
+  - An optional **interval** parameter (string or number) that maps to an `Interval` enum.
+  - Optional start and end date-time parameters (as strings to be parsed into `LocalDateTime`) for custom time ranges.  
+  **Note:** The user must provide either an interval parameter or both date parameters.
 
-# Как начать разработку начиная с шаблона?
+- **Validation and Error Handling:**  
+  All input parameters are rigorously validated and converted to their corresponding types. Any validation errors result in proper HTTP error responses, ensuring that clients receive clear feedback.
 
-1. Сначала нужно склонировать этот репозиторий
+- **Integration in the Ecosystem:**  
+  As part of the larger application, Analytics Service plays a crucial role in monitoring system behavior and performance across all microservices.
 
-```shell
-git clone https://github.com/FAANG-School/ServiceTemplate
-```
+---
 
-2. Далее удаляем служебную директорию для git
+## Service Template
 
-```shell
-# Переходим в корневую директорию проекта
-cd ServiceTemplate
-rm -rf .git
-```
+This service is built as part of a standardized Spring Boot project template.
 
-3. Далее нужно создать совершенно пустой репозиторий в github/gitlab
+### Technologies Used
 
-4. Создаём новый репозиторий локально и коммитим изменения
+- [Spring Boot](https://spring.io/projects/spring-boot) – Main framework
+- [PostgreSQL](https://www.postgresql.org/) – Primary relational database
+- [Redis](https://redis.io/) – Used as a cache and for message queuing via pub/sub
+- [Testcontainers](https://testcontainers.com/) – For isolated testing with a real database
+- [Liquibase](https://www.liquibase.org/) – For managing database schema migrations
+- [Gradle](https://gradle.org/) – Build system
+- [Lombok](https://projectlombok.org/) – For simplified POJO class handling
+- [MapStruct](https://mapstruct.org/) – For efficient mapping between POJOs
 
-```shell
-git init
-git remote add origin <link_to_repo>
-git add .
-git commit -m "<msg>"
-```
+### Database
 
-Готово, можно начинать работу!
-
-# Как запустить локально?
-
-Сначала нужно развернуть базу данных из директории [infra](../infra)
-
-Далее собрать gradle проект
-
-```shell
-# Нужно запустить из корневой директории, где лежит build.gradle.kts
-gradle build
-```
-
-Запустить jar'ник
-
-```shell
-java -jar build/libs/ServiceTemplate-1.0.jar
-```
-
-Но легче всё это делать через IDE
-
-# Код
-
-RESTful приложения калькулятор с единственным endpoint'ом, который принимает 2 числа и выдает результаты их сложения,
-вычитаяни, умножения и деления
-
-* Обычная трёхслойная
-  архитектура – [Controller](src/main/java/faang/school/analytics/controller), [Service](src/main/java/faang/school/analytics/service), [Repository](src/main/java/faang/school/analytics/repository)
-* Слой Repository реализован и на jdbcTemplate, и на JPA (Hibernate)
-* Написан [GlobalExceptionHandler](src/main/java/faang/school/analytics/controller/GlobalExceptionHandler.java)
-  который умеет возвращать ошибки в формате `{"code":"CODE", "message": "message"}`
-* Используется TTL кэширование вычислений
-  в [CalculationTtlCacheService](src/main/java/faang/school/analytics/service/cache/CalculationTtlCacheService.java)
-* Реализован простой Messaging через [Redis pub/sub](https://redis.io/docs/manual/pubsub/)
-  * [Конфигурация](src/main/java/faang/school/analytics/config/RedisConfig.java) –
-    сетапится [RedisTemplate](https://docs.spring.io/spring-data/redis/docs/current/api/org/springframework/data/redis/core/RedisTemplate.html) –
-    класс, для удобной работы с Redis силами Spring
-  * [Отправитель](src/main/java/faang/school/analytics/service/messaging/RedisCalculationPublisher.java) – генерит
-    рандомные запросы и отправляет в очередь
-  * [Получатель](src/main/java/faang/school/analytics/service/messaging/RedisCalculationSubscriber.java) –
-    получает запросы и отправляет задачи асинхронно выполняться
-    в [воркер](src/main/java/faang/school/analytics/service/worker/CalculationWorker.java)
-
-# Тесты
-
-Написаны только для единственного REST endpoint'а
-* SpringBootTest
-* MockMvc
-* Testcontainers
-* AssertJ
-* JUnit5
-* Parameterized tests
-
-# TODO
-
-* Dockerfile, который подключается к сети запущенной postgres в docker-compose
-* Redis connectivity
-* ...
+- The PostgreSQL database is managed in a separate service ([infra](../infra)).
+- Redis is also deployed as a single instance in the [infra](../infra) service.
+- Liquibase automatically applies the necessary migrations to a bare PostgreSQL instance when the application starts.
+- Integration tests use Testcontainers to run an isolated instance of PostgreSQL.
+- Both JdbcTemplate and JPA (Hibernate) are demonstrated in the codebase.
